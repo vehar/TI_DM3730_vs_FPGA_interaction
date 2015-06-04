@@ -28,6 +28,8 @@
 #include "ExtBusFunc.h" 
 
 #include "AcousticLib/FPGACommunication.h"
+#include "CustThread/CustThread.h"
+
 //#define DEBUG 
 
 int koef_array[23];
@@ -39,7 +41,6 @@ for (int i = 10000; i>0; i--);
 }
 
 FPGACommunication FPGA;
-
  
 void draw_sine (void)
 {
@@ -84,7 +85,6 @@ FPGA_Write(100 ,0);//SyncCtrl_nENABLE - on
 void Ascan_init (void)
 {
 //////A-SCAN_init//////////////
-//FPGA.
 FPGA_Write(_AScanDrawMode ,2); //AScanDrawMode 0 или AScan№
 FPGA_Write(_AScanEnAddr ,2); //Если не произвести эту запись (AScanEn) - изображение на экране не появится!!!!!
 FPGA_Write(_AScanWrCS ,2);
@@ -186,6 +186,28 @@ for (int i = 0; i<=127; i++){FPGA_Write(i ,0);}
 FPGA_Write(0 ,0);	
 }
 
+DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
+{
+	int i = 0;
+	while(i<7)
+	{
+printf("tread %i, i = %i\n",lpParameter, i);
+i++;
+	Sleep(1000);
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 koef_array	[	0	]	=	-75	;
@@ -239,6 +261,16 @@ int rd_index = 0;
 int window_480 = 1;
 
 //FPGA_Write(GenEn ,0);//GenEn
+
+
+//CustThread(ThreadKeybProc,NULL);
+DWORD dwThreadId;
+	HANDLE hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)2, 0, &dwThreadId);   
+
+		Sleep(100);
+
+	CloseHandle(hHandle);
+
 
 while(1)
 {

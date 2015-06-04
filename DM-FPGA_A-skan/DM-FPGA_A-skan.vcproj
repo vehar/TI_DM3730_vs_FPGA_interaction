@@ -470,6 +470,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="CustThread"
+				>
+				<File
+					RelativePath=".\CustThread\CustThread.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CustThread\CustThread.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
