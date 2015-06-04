@@ -186,15 +186,22 @@ for (int i = 0; i<=127; i++){FPGA_Write(i ,0);}
 FPGA_Write(0 ,0);	
 }
 
+DWORD dwThreadId;
+HANDLE hHandle;
+
 DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
 {
 	int i = 0;
-	while(i<7)
+	while(i<3)
 	{
 printf("tread %i, i = %i\n",lpParameter, i);
 i++;
-	Sleep(1000);
+	Sleep(100);
 	}
+
+printf("Exiting tread %i \n",lpParameter);
+
+	CloseHandle(hHandle);
 	return 0;
 }
 
@@ -264,12 +271,13 @@ int window_480 = 1;
 
 
 //CustThread(ThreadKeybProc,NULL);
-DWORD dwThreadId;
-	HANDLE hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)2, 0, &dwThreadId);   
 
+	 hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)1, 0, &dwThreadId);   
+ 
+	 hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)2, 0, &dwThreadId);  
 		Sleep(100);
 
-	CloseHandle(hHandle);
+	//CloseHandle(hHandle);
 
 
 while(1)
