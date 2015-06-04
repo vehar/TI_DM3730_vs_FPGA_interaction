@@ -2,12 +2,12 @@
 #include "UniDriver.h"
 
 #include <windows.h>
+#include "DM3730_Types.h"
 //#include <iostream>
 //#include "IntLib.h"
 //using namespace std;
 
 HANDLE UniDriver::hDrv = 0;
-
 
 UniDriver::UniDriver()
 {
@@ -55,3 +55,30 @@ DWORD UniDriver::WriteReg(RWRegData_t* writeData)
 	return accepted;
 }
 
+DWORD UniDriver::WriteWORD(USHORT addr, USHORT val)
+{
+	volatile u32 Offset = addr*2;
+  	RWRegData_t regData = {GPMC_CS1_BASE, 0, 0};
+	regData.value = val;
+	regData.offset = Offset;
+	return WriteReg(&regData);	
+}
+DWORD UniDriver::ReadWORD(USHORT addr, USHORT& val)
+{
+	u16 result;
+	volatile u32 Offset = addr*2;
+	RWRegData_t regData = {GPMC_CS1_BASE, 0, 0};
+	regData.offset = Offset;
+	result = ReadReg(&regData);
+	val = regData.value;
+	return result;
+}
+
+void UniDriver::WriteBuf(WORD Addr, USHORT* Buff, int size)
+{
+
+}
+void UniDriver::ReadBuf(WORD Addr, USHORT* Buff, int size)
+{
+
+}

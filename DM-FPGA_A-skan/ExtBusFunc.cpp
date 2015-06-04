@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "UniDriver.h"
 
-UniDriver bus;
+UniDriver bus; //general memory interface
 
 void SetDataValue(DWORD val, DWORD addr)
 {
@@ -36,8 +36,6 @@ DWORD GetCs1Value(DWORD addr)
 }
 
 
-
-
 DWORD GetRegVal(int i) 
 {
     RWRegData_t regData = {GPMC_BASE_ADDR, offsetof(GPMC_REGS_t, GPMC_CONFIGDATA[i].GPMC_CONFIG2), 0};
@@ -54,11 +52,10 @@ void ExtBusCs1Init(void)
 	regData.value |= 1<<4;//latency x2, если убрать будет в 2-ва раза быстрее
     bus.WriteReg(&regData); 
 
-////////////////////////////////////////////
+	//Set bus  timings
 	RWRegData_t regData_timing = {GPMC_BASE_ADDR, offsetof(GPMC_REGS_t, GPMC_CONFIGDATA[1].GPMC_CONFIG2), 0};
 	bus.ReadReg(&regData_timing);
 	regData_timing.value = 0;
-	regData_timing.value |= 0x001F1F02;//default - 0x00101001
+	regData_timing.value |= 0x001F1F02;//default = 0x00101001
     bus.WriteReg(&regData_timing); 
-
 }

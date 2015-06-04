@@ -103,15 +103,3 @@ DeviceIoControl(hGpio, IOCTL_GPIO_GETMODE,&pin,sizeof(pin),&dwValue,sizeof(dwVal
 	return dwValue;
 };
 
-
-
-
-/*
-void GPIODriver::FPGA_DCLK(bool val)
-{
-	if(val)
-		SetGpioBit(DCLK_PIN); 
-	else 
-		ClrGpioBit(DCLK_PIN); 
-}
-*/

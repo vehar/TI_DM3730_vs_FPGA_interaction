@@ -1,0 +1,22 @@
+<NotepadPlus>
+    <Project name="&#x0418;&#x043C;&#x044F; &#x043F;&#x0440;&#x043E;&#x0435;&#x043A;&#x0442;&#x0430;">
+        <File name="AcousticLib\AcousticDefines.h" />
+        <File name="AcousticLib\AcousticScheme.cpp" />
+        <File name="AcousticLib\AcousticScheme.h" />
+        <File name="AcousticLib\AcousticSchemeProcessor.cpp" />
+        <File name="AcousticLib\AcousticSchemeProcessor.h" />
+        <File name="AcousticLib\AcousticTract35_2Ch.cpp" />
+        <File name="AcousticLib\AcousticTract35_2Ch.h" />
+        <File name="AcousticLib\CustAccumType.h" />
+        <File name="AcousticLib\CustAverBuf.cpp" />
+        <File name="AcousticLib\CustAverBuf.h" />
+        <File name="AcousticLib\CustLimitType.h" />
+        <File name="AcousticLib\CustomTypes.h" />
+        <File name="AcousticLib\FPGACommunication.cpp" />
+        <File name="AcousticLib\FPGACommunication.h" />
+        <File name="AcousticLib\FPGA_CustTypes.cpp" />
+        <File name="AcousticLib\FPGA_CustTypes.h" />
+        <File name="AcousticLib\QueueTask.cpp" />
+        <File name="AcousticLib\QueueTask.h" />
+    </Project>
+</NotepadPlus>

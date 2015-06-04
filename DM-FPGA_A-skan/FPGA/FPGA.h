@@ -1,7 +1,13 @@
 #pragma once
-//#include "PXA320_Types.h"
+#include "../DM3730_Types.h"
 //#include "pxaUniLib.h"
 //#include "PXA320_LIB.h"
+
+/*
+typedef char           u8;
+typedef unsigned short u16;
+typedef unsigned int   u32;
+*/
 
 #define FPGA_DCLKPIO     130
 #define FPGA_DATA0PIO    135
@@ -9,12 +15,8 @@
 #define FPGA_CDONEPIO    133
 #define FPGA_NCONFIGPIO  131
 
+void FPGA_BUS_Init(); //Inits clock and ext_cs0
 
-typedef char           u8;
-typedef unsigned short u16;
-typedef unsigned int   u32;
-
-void FPGA_Init(); //Inits clock and ext_cs0(CPLD)
 void FPGA_Write(DWORD Addr,unsigned short Value);
 void FPGA_Write (DWORD Addr, unsigned short Value, DWORD Count) ;
 u16 FPGA_Read(DWORD Addr);
@@ -37,7 +39,7 @@ void ExtBusCs1Init();
 /************************************************************************
  TABLE WITH ALL FPGA ADDRESSES
 ************************************************************************/
-enum FPGA_Addresses
+/*enum FPGA_Addresses
 {
 	FreqSync1Addr = 1, FreqSync2Addr, SyncCtrlAddr, CompressAddr, DetectorAddr, AnChSwich, AttenSw, IntegratorCoefAddr, InversionSignal, AcoustContSum,
 	TgcEnAddr = 11, DacData1, DacData2, TgcStartAddrWr, DacCh, AcousticContactGain,
@@ -53,7 +55,7 @@ enum FPGA_Addresses
 
 	Gate1Start_1 = 70, Gate1Start_2, Gate1End_1, Gate1End_2, Gate1Level, Gate1TFirst_1, Gate1TFirst_2, Gate1TMax_1, Gate1TMax_2, Gate1T0_1, Gate1T0_2,
 	Gate2Start_1	 , Gate2Start_2, Gate2End_1, Gate2End_2, Gate2Level, Gate2TFirst_1, Gate2TFirst_2, Gate2TMax_1, Gate2TMax_2, Gate2T0_1, Gate2T0_2
-};
+};*/
 /* DEFAULT
 #define FreqSync1Addr 1
 #define FreqSync2Addr 2
@@ -134,57 +136,60 @@ enum FPGA_Addresses
 */
 
 // New
-#define FreqSync1Addr 1
-#define FreqSync2Addr 2
-#define SyncCtrlAddr 3
-#define CompressAddr 4
-#define DetectorAddr 5
-#define AnChSwich 19
-#define AttenSw 16
-#define IntegratorCoefAddr 8
-#define InversionSignal 81
-#define AcoustContSum 10    //RD
 
-#define TgcEnAddr 11
-#define DacData1 48
-#define DacData2 50
-#define TgcStartAddrWr 14
-#define DacCh 49
-#define AcousticContactGain 95
+#define _FreqSync1Addr 1
+#define _FreqSync2Addr 2
+#define _SyncCtrlAddr 3
+#define _CompressAddr 4
+#define _DetectorAddr 5
+#define _AnChSwich 19
+#define _AttenSw 16
+#define _IntegratorCoefAddr 8
+#define _InversionSignal 81
+#define _AcoustContSum 10    //RD
 
-#define GenBuffAddr1 64
-#define GenBuffAddr2 65
-#define GenCSAddr 66
-#define GenStartAddrWr 67
-#define GenEn 80
+#define _TgcEnAddr 11
+#define _DacData1 48
+#define _DacData2 50
+#define _TgcStartAddrWr 14
+#define _DacCh 49
+#define _AcousticContactGain 95
 
-#define FilterEnAddr 30
-#define FilterCompressAddr 31
-#define FilterCoeffsAddr 32
-#define FilterCoeffsRstAddrWr 33
-#define FilterSwich 34
-#define AScanDrawMode 96
+#define _GenBuffAddr1 64
+#define _GenBuffAddr2 65
+#define _GenCSAddr 66
+#define _GenStartAddrWr 67
+#define _GenEn 80
 
-#define AScanEnAddr 97
-#define AScanBuffAddr1 98
-#define AScanWrCS 112
-#define AScanStartAddrWr 113
-#define AScanRamCntRdRst 114
-#define AScanBuffAddr2 99
+#define _FilterEnAddr 30
+#define _FilterCompressAddr 31
+#define _FilterCoeffsAddr 32
+#define _FilterCoeffsRstAddrWr 33
+#define _FilterSwich 34
+#define _AScanDrawMode 96
 
-#define Cursor1CoordX 115
+#define _AScanEnAddr 97
+#define _AScanBuffAddr1 98
+#define _AScanWrCS 112
+#define _AScanStartAddrWr 113
+#define _AScanRamCntRdRst 114
+#define _AScanBuffAddr2 99
+
+#define _Cursor1CoordX 115
 //#define Cursor1CoordY 47
 //#define Cursor2CoordX 48
 //#define Cursor2CoordY 49
 
-#define RamCntRdRst 51
-#define AdcDelayAddr1 52
-#define AdcDelayAddr2 53
-#define AdcBuffAddr 82      //RD
-#define ReadBuffSize 55
-#define ProbeDelay 56
-#define TestDataBus 17  //R/W
-#define TestAddrBus 18
+#define _RamCntRdRst 51
+#define _AdcDelayAddr1 52
+#define _AdcDelayAddr2 53
+#define _AdcBuffAddr 82      //RD
+#define _ReadBuffSize 55
+#define _ProbeDelay 56
+#define _TestDataBus 17  //R/W
+#define _TestAddrBus 18
+
+
 //#define MajorVersion 63
 //#define SvnVersion 64
 /*

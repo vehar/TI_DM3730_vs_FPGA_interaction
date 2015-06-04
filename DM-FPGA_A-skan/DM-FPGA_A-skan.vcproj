@@ -438,6 +438,38 @@
 				RelativePath=".\UniDriver.cpp"
 				>
 			</File>
+			<Filter
+				Name="AcustLib"
+				>
+				<File
+					RelativePath=".\AcousticLib\AcousticDefines.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\AcousticScheme.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\AcousticScheme.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\FPGA_CustTypes.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\FPGA_CustTypes.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\FPGACommunication.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\FPGACommunication.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
