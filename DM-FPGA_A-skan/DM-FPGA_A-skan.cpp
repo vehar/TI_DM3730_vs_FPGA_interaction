@@ -33,6 +33,7 @@
 //#define DEBUG 
 
 int koef_array[23];
+FPGACommunication FPGA;
 
 /////////////////////////////////////////////////////////////
 void _dellay(void)
@@ -40,7 +41,7 @@ void _dellay(void)
 for (int i = 10000; i>0; i--);
 }
 
-FPGACommunication FPGA;
+
  
 void draw_sine (void)
 {
@@ -69,6 +70,31 @@ int del_chk(int del)
 	return del & 0xFFF8;
 }
 int t; 
+
+//---------KeyPad_proc-------------------
+void KeypadInit(void);
+DWORD WINAPI KeyPadInterruptThread(PVOID pvParam);
+
+
+int DataRefreshed_Flag = 0;
+int KeyState = 0;
+int EncState = 0;
+
+//Dummy
+void KeypadInit(void){};
+DWORD WINAPI KeyPadInterruptThread(PVOID pvParam)
+{
+	while(1)
+	{
+	 DataRefreshed_Flag = rand()%2;
+	 KeyState = rand()%18;
+	 EncState ++;
+	 Sleep(500);
+	}
+	 return 0;
+}
+//---------KeyPad_proc-------------------
+
 
 
 void System_init (void) 
@@ -189,24 +215,96 @@ FPGA_Write(0 ,0);
 DWORD dwThreadId;
 HANDLE hHandle;
 
+/*
 DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
 {
 	int i = 0;
-	while(i<3)
+	while(i<2)
 	{
 printf("tread %i, i = %i\n",lpParameter, i);
 i++;
 	Sleep(100);
+	CloseHandle(hHandle);
 	}
 
 printf("Exiting tread %i \n",lpParameter);
 
-	CloseHandle(hHandle);
+//VOID ExitThread();
+//	CloseHandle(hHandle);
 	return 0;
 }
+*/
+int SendMouseMsg(DWORD flag, int data, int dx, int dy)
+{
+	MOUSEINPUT  mInp; 
+	INPUT xIn;
+	int err = 1;
 
+	switch (flag)
+	{
+	case MOUSEEVENTF_ABSOLUTE:
+	mInp.dwFlags = MOUSEEVENTF_ABSOLUTE;
+	mInp.dx = dx;
+	mInp.dy = dy;
+		break;
 
+	case MOUSEEVENTF_LEFTDOWN:
+	mInp.dwFlags = MOUSEEVENTF_LEFTDOWN;
+		break;
+	case MOUSEEVENTF_LEFTUP:
+	mInp.dwFlags = MOUSEEVENTF_LEFTUP;
+		break;
+	case MOUSEEVENTF_RIGHTDOWN:
+	mInp.dwFlags = MOUSEEVENTF_RIGHTDOWN;
+		break;
+	case MOUSEEVENTF_RIGHTUP:
+	mInp.dwFlags = MOUSEEVENTF_RIGHTUP;
+		break;
+	case MOUSEEVENTF_MIDDLEDOWN:
+	mInp.dwFlags = MOUSEEVENTF_MIDDLEDOWN;
+		break;
+	case MOUSEEVENTF_MIDDLEUP:
+	mInp.dwFlags = MOUSEEVENTF_MIDDLEUP;
+		break;
 
+	case MOUSEEVENTF_WHEEL:
+	mInp.dwFlags = MOUSEEVENTF_WHEEL;
+	mInp.mouseData = data;
+		break;
+	case MOUSEEVENTF_MOVE:
+	mInp.dwFlags = MOUSEEVENTF_MOVE;
+		break;
+	default:
+		return err;
+		break;
+	}
+	
+	xIn.type=INPUT_MOUSE;
+	xIn.mi = mInp;
+	SendInput(1,&xIn,sizeof(INPUT));
+return 0;
+}
+
+DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
+{
+	int i = 0;
+	while(1)
+	{
+		if(DataRefreshed_Flag)
+		{
+			DataRefreshed_Flag = 0;
+			printf("Key =  %i, Enc = %i\n",KeyState, EncState);
+			SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,KeyState*5000,KeyState*5000 );
+		}
+	Sleep(0);
+	}
+
+printf("Exiting tread %i \n",lpParameter);
+
+//VOID ExitThread();
+//	CloseHandle(hHandle);
+	return 0;
+}
 
 
 
@@ -241,6 +339,8 @@ koef_array	[	20	]	=	75	;
 koef_array	[	21	]	=	114	;
 koef_array	[	22	]	=	128	;
 	
+KeypadInit();
+
 FPGA_BUS_Init();
 
 FPGA_Regs_deinit();
@@ -271,17 +371,23 @@ int window_480 = 1;
 
 
 //CustThread(ThreadKeybProc,NULL);
+printf("Starting treads \n");
 
-	 hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)1, 0, &dwThreadId);   
+	 hHandle = CreateThread(NULL, 0, KeyPadInterruptThread, /*(LPVOID)&x*/(LPVOID)1, 0, &dwThreadId);   
  
 	 hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)2, 0, &dwThreadId);  
-		Sleep(100);
+		//Sleep(1000);
 
-	//CloseHandle(hHandle);
+	 printf("Leave treads \n");
+	// SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,5000,500 );
+//	CloseHandle(hHandle);
 
 
 while(1)
 {
+	//printf("WHILE \n");
+//Sleep(100);
+
 	int t = 0;
 	//while((t <= 10)||(t >= 950)){t = FPGA_Read(AdcBuffAddr);} //задержка 130
 /*	

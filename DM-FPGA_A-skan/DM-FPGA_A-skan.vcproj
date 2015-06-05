@@ -482,6 +482,10 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Controls"
+				>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
