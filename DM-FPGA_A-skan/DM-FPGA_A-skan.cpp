@@ -1,5 +1,5 @@
 // FPGA_Client.cpp : Defines the entry point for the console application.
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -92,7 +92,7 @@ DWORD WINAPI KeyPadInterruptThread(PVOID pvParam)
 	 Sleep(500);
 	}
 	 return 0;
-}
+} 
 //---------KeyPad_proc-------------------
 
 
