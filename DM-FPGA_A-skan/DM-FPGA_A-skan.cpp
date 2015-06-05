@@ -29,6 +29,7 @@
 
 #include "AcousticLib/FPGACommunication.h"
 #include "CustThread/CustThread.h"
+#include "Controls/CustControls.h"
 
 //#define DEBUG 
 
@@ -234,56 +235,6 @@ printf("Exiting tread %i \n",lpParameter);
 	return 0;
 }
 */
-int SendMouseMsg(DWORD flag, int data, int dx, int dy)
-{
-	MOUSEINPUT  mInp; 
-	INPUT xIn;
-	int err = 1;
-
-	switch (flag)
-	{
-	case MOUSEEVENTF_ABSOLUTE:
-	mInp.dwFlags = MOUSEEVENTF_ABSOLUTE;
-	mInp.dx = dx;
-	mInp.dy = dy;
-		break;
-
-	case MOUSEEVENTF_LEFTDOWN:
-	mInp.dwFlags = MOUSEEVENTF_LEFTDOWN;
-		break;
-	case MOUSEEVENTF_LEFTUP:
-	mInp.dwFlags = MOUSEEVENTF_LEFTUP;
-		break;
-	case MOUSEEVENTF_RIGHTDOWN:
-	mInp.dwFlags = MOUSEEVENTF_RIGHTDOWN;
-		break;
-	case MOUSEEVENTF_RIGHTUP:
-	mInp.dwFlags = MOUSEEVENTF_RIGHTUP;
-		break;
-	case MOUSEEVENTF_MIDDLEDOWN:
-	mInp.dwFlags = MOUSEEVENTF_MIDDLEDOWN;
-		break;
-	case MOUSEEVENTF_MIDDLEUP:
-	mInp.dwFlags = MOUSEEVENTF_MIDDLEUP;
-		break;
-
-	case MOUSEEVENTF_WHEEL:
-	mInp.dwFlags = MOUSEEVENTF_WHEEL;
-	mInp.mouseData = data;
-		break;
-	case MOUSEEVENTF_MOVE:
-	mInp.dwFlags = MOUSEEVENTF_MOVE;
-		break;
-	default:
-		return err;
-		break;
-	}
-	
-	xIn.type=INPUT_MOUSE;
-	xIn.mi = mInp;
-	SendInput(1,&xIn,sizeof(INPUT));
-return 0;
-}
 
 DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
 {
@@ -295,8 +246,9 @@ DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
 			DataRefreshed_Flag = 0;
 			printf("Key =  %i, Enc = %i\n",KeyState, EncState);
 			SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,KeyState*5000,KeyState*5000 );
+			SendKbdMsg(1,KeyState+40);
 		}
-	Sleep(0);
+	Sleep(1);
 	}
 
 printf("Exiting tread %i \n",lpParameter);
@@ -385,7 +337,9 @@ printf("Starting treads \n");
 
 while(1)
 {
-	//printf("WHILE \n");
+	Sleep(0);//Return quants to system
+
+//printf("WHILE \n");
 //Sleep(100);
 
 	int t = 0;

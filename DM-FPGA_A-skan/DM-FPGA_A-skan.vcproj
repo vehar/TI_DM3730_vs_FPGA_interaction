@@ -485,6 +485,14 @@
 			<Filter
 				Name="Controls"
 				>
+				<File
+					RelativePath=".\Controls\CustControls.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Controls\CustControls.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
