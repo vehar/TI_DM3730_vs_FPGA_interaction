@@ -28,6 +28,10 @@
 #include "ExtBusFunc.h" 
 
 #include "AcousticLib/FPGACommunication.h"
+#include "AcousticLib/AcousticScheme.h"
+//#include "AcousticLib/AcousticSchemeProcessor.h"
+
+
 #include "CustThread/CustThread.h"
 #include "Controls/CustControls.h"
 
@@ -36,7 +40,25 @@
 int koef_array[23];
 FPGACommunication FPGA;
 
+//AcousticSchemeProcessor asp;
+
+DWORD dwThreadId;
+HANDLE hHandle;
+
+ int DataRefreshed_Flag = 0;
+ int KeyState = 0;
+ int EncState = 0;
+
+///////////////////Settings///////////////////////////////////
+//int SyncFreq = 1000; 
+int tmp = 0;
 /////////////////////////////////////////////////////////////
+void AcousticScheme_DefaultInit(void)
+{
+activeScheme = &Rdm11Scheme;
+}
+
+
 void _dellay(void)
 {
 for (int i = 10000; i>0; i--);
@@ -72,38 +94,14 @@ int del_chk(int del)
 }
 int t; 
 
-//---------KeyPad_proc-------------------
-void KeypadInit(void);
-DWORD WINAPI KeyPadInterruptThread(PVOID pvParam);
-
-
-int DataRefreshed_Flag = 0;
-int KeyState = 0;
-int EncState = 0;
-
-//Dummy
-void KeypadInit(void){};
-DWORD WINAPI KeyPadInterruptThread(PVOID pvParam)
-{
-	while(1)
-	{
-	 DataRefreshed_Flag = rand()%2;
-	 KeyState = rand()%18;
-	 EncState ++;
-	 Sleep(500);
-	}
-	 return 0;
-} 
-//---------KeyPad_proc-------------------
-
 
 
 void System_init (void) 
 {
 //////System_init/////////////////////////////////////////////////////
 FPGA.setSyncSource(SyncStop);
-FPGA.setSyncFreq(1000);
-FPGA.setSignalCompress(1);
+FPGA.setSyncFreq(activeScheme->inqFreq);//1000
+FPGA.setSignalCompress(activeScheme->signal.compress);//1
 FPGA.setSyncSource(SyncInt);//SyncCtrl - on
 
 FPGA_Write(100 ,0);//SyncCtrl_nENABLE - on
@@ -213,53 +211,6 @@ for (int i = 0; i<=127; i++){FPGA_Write(i ,0);}
 FPGA_Write(0 ,0);	
 }
 
-DWORD dwThreadId;
-HANDLE hHandle;
-
-/*
-DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
-{
-	int i = 0;
-	while(i<2)
-	{
-printf("tread %i, i = %i\n",lpParameter, i);
-i++;
-	Sleep(100);
-	CloseHandle(hHandle);
-	}
-
-printf("Exiting tread %i \n",lpParameter);
-
-//VOID ExitThread();
-//	CloseHandle(hHandle);
-	return 0;
-}
-*/
-
-DWORD WINAPI ThreadKeybProc(LPVOID lpParameter)
-{
-	int i = 0;
-	while(1)
-	{
-		if(DataRefreshed_Flag)
-		{
-			DataRefreshed_Flag = 0;
-			printf("Key =  %i, Enc = %i\n",KeyState, EncState);
-			SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,KeyState*5000,KeyState*5000 );
-			SendKbdMsg(1,KeyState+40);
-		}
-	Sleep(1);
-	}
-
-printf("Exiting tread %i \n",lpParameter);
-
-//VOID ExitThread();
-//	CloseHandle(hHandle);
-	return 0;
-}
-
-
-
 
 
 
@@ -290,12 +241,14 @@ koef_array	[	19	]	=	20	;
 koef_array	[	20	]	=	75	;
 koef_array	[	21	]	=	114	;
 koef_array	[	22	]	=	128	;
-	
+
+AcousticScheme_DefaultInit();
+
 KeypadInit();
 
 FPGA_BUS_Init();
 
-FPGA_Regs_deinit();
+FPGA_Regs_deinit(); 
 
 System_init();
 Ascan_init();
@@ -306,9 +259,22 @@ draw_sine();
 
 Gen_init();
 
-
+ 
 Acust_init();
 
+//----------------------------Main threads started--------------------------------
+//CustThread(ThreadKeybProc,NULL);
+/*printf("Starting treads \n");
+
+	 hHandle = CreateThread(NULL, 0, KeyPadInterruptThread, (LPVOID)1, 0, &dwThreadId);   
+ 
+	 hHandle = CreateThread(NULL, 0, ThreadKeybProc, (LPVOID)2, 0, &dwThreadId);  
+		//Sleep(1000);
+
+	 printf("Leave treads \n");*/
+	// SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,5000,500 );
+//	CloseHandle(hHandle);
+//--------------------------------------------------------------------------------
 
 //////READ_ADC////////////////////////////////////////////////////////////////////
 
@@ -322,25 +288,9 @@ int window_480 = 1;
 //FPGA_Write(GenEn ,0);//GenEn
 
 
-//CustThread(ThreadKeybProc,NULL);
-printf("Starting treads \n");
-
-	 hHandle = CreateThread(NULL, 0, KeyPadInterruptThread, /*(LPVOID)&x*/(LPVOID)1, 0, &dwThreadId);   
- 
-	 hHandle = CreateThread(NULL, 0, ThreadKeybProc, /*(LPVOID)&x*/(LPVOID)2, 0, &dwThreadId);  
-		//Sleep(1000);
-
-	 printf("Leave treads \n");
-	// SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,5000,500 );
-//	CloseHandle(hHandle);
-
-
 while(1)
 {
 	Sleep(0);//Return quants to system
-
-//printf("WHILE \n");
-//Sleep(100);
 
 	int t = 0;
 	//while((t <= 10)||(t >= 950)){t = FPGA_Read(AdcBuffAddr);} //задержка 130

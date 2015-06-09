@@ -1,9 +1,9 @@
 #pragma once
 #include <windows.h>
 
-#include "AnalogContrStm.h"
+#include "AnalogContrStm.h" 
 #include "FPGACommunication.h"
-#include "CustAverBuf.h"
+//#include "CustAverBuf.h" //rdm11
 #include "CustLimitType.h"
 #include "FPGA_CustTypes.h"
 #include "AcousticScheme.h"
@@ -86,7 +86,7 @@ typedef struct AcoustiFpgaScheme_st
 
 class AcousticSchemeProcessor
 {
-	AnalogContrStm	*stm;
+//	AnalogContrStm	*stm; rdm11
 	FPGACommunication *fpgaCom;
 	CustAverBuf<USHORT> *averBuf;
 
@@ -110,7 +110,7 @@ class AcousticSchemeProcessor
 public:	
 	AcousticSchemeProcessor();
 	~AcousticSchemeProcessor();
-	AnalogContrStm* getStmPtr() {return stm;}
+//	AnalogContrStm* getStmPtr() {return stm;} rdm11
 	FPGACommunication* getFpgaComPtr() {return fpgaCom;}
 	bool setAnalogControlValue(UsedAnalogCmd vmd, UCHAR value = 0);
 	void setFpgaChannelsMode(UsedChModes Data);

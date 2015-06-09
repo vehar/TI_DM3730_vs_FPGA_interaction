@@ -38,6 +38,7 @@ typedef struct
 		UCHAR			trimPercent;
 		bool			invertEn;
 		bool			drawFilled;
+		bool			compress; //RDM11
 	}signal;
 
 	struct  
@@ -124,4 +125,7 @@ enum UsedChModes
 enum gateLogicMode {gateOff, gateOn_Max, gateOn_First, gateOn_Zero};
 
 extern AcousticScheme sampleScheme;
+
+extern AcousticScheme Rdm11Scheme;
+
 extern AcousticScheme *activeScheme;

@@ -15,7 +15,7 @@ enum AcousticThreadCommands
 #ifdef WINCE
 
 #include "AnalogContrStm.h"
-#include "CustThread.h"
+#include "..\CustThread\CustThread.h"
 #include "AcousticSchemeProcessor.h"
 
 //class FPGA_CustomPulser;

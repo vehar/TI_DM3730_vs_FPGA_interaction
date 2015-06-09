@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <windows.h>
 #include "UniDriver.h"
 
@@ -9,7 +9,7 @@ void SetDataValue(DWORD val, DWORD addr)
 	RWRegData_t regData = {GPMC_DATA_BASE, 0, 0};
 	regData.value = val;
 	regData.offset = addr;
-	bus.WriteReg(&regData);	
+	bus.WriteReg(&regData);	 
 }
 
 DWORD GetDataValue(DWORD addr)

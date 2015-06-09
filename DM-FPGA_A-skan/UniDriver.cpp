@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "UniDriver.h"
 
 #include <windows.h>
@@ -65,7 +65,7 @@ DWORD UniDriver::WriteWORD(USHORT addr, USHORT val)
 }
 DWORD UniDriver::ReadWORD(USHORT addr, USHORT& val)
 {
-	u16 result;
+	DWORD result;
 	volatile u32 Offset = addr*2;
 	RWRegData_t regData = {GPMC_CS1_BASE, 0, 0};
 	regData.offset = Offset;

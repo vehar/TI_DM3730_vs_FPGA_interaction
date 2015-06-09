@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "GpioDriver.h"
 #include <commctrl.h>
 #include <winioctl.h>

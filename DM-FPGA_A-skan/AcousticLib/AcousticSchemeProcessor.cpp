@@ -2,7 +2,7 @@
 
 AcousticSchemeProcessor::AcousticSchemeProcessor()
 {
-	stm = new AnalogContrStm();
+	//stm = new AnalogContrStm(); rdm11
 	fpgaCom = new FPGACommunication();
 	analogCtrlRegVal = 0;
 
@@ -23,7 +23,7 @@ AcousticSchemeProcessor::~AcousticSchemeProcessor()
 	delete averBuf;
 
 	delete fpgaCom;
-	delete stm;
+//	delete stm; rdm11
 }
 
 void AcousticSchemeProcessor::initValuesRestrictions()
@@ -277,7 +277,8 @@ bool AcousticSchemeProcessor::setAnalogControlValue(UsedAnalogCmd cmd, UCHAR val
 	default:
 		break;
 	}
-	return  stm->I2C_GenRecSetControlValue(analogCtrlRegVal); 
+//	return  stm->I2C_GenRecSetControlValue(analogCtrlRegVal);  rdm11
+	return 0;
 }
 
 
@@ -292,7 +293,7 @@ void AcousticSchemeProcessor::setFpgaChannelsMode(UsedChModes Data)
 	case Gen0_Ch3://1 נאחה
 		fpgaCom->setGenOutCh(1);
 		fpgaCom->setAnalogChSwich(3);
-		break;
+		break; 
 	case Gen1_Ch2://2 סמגל
 		fpgaCom->setGenOutCh(2);
 		fpgaCom->setAnalogChSwich(1);

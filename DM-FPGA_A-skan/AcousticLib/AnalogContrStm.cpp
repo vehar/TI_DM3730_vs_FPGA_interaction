@@ -1,12 +1,7 @@
-class AnalogContrStm
-{
+#include "AnalogContrStm.h"
 
-public:
-	AnalogContrStm();
-	~AnalogContrStm();
-	
-	bool I2C_GenRecSetControlValue(UCHAR val);
-	void getMajorVersion(USHORT& val);
+
+bool AnalogContrStm::I2C_GenRecSetControlValue(UCHAR val){return 1;};
+void AnalogContrStm::getMajorVersion(USHORT &val){};
 
 	
-};

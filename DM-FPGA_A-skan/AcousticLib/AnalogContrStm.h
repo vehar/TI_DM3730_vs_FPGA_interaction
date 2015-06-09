@@ -9,8 +9,8 @@ public:
 	AnalogContrStm();
 	~AnalogContrStm();
 	
-	bool I2C_GenRecSetControlValue(UCHAR val){return 1;};
-	void getMajorVersion(USHORT& val){};
+	bool I2C_GenRecSetControlValue(UCHAR val);
+	void getMajorVersion(USHORT& val);
 
 	
-};
+}; 

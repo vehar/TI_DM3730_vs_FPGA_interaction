@@ -23,4 +23,4 @@ CustThread::~CustThread()
 HANDLE CustThread::GetHandle()
 {
 	return ThreadHandle;
-}
+} 

@@ -20,7 +20,6 @@ DM-FPGA_A-skan.cpp
 /////////////////////////////////////////////////////////////////////////////
 Other standard files:
 
-StdAfx.h, StdAfx.cpp
     These files are used to build a precompiled header (PCH) file
     named DM-FPGA_A-skan.pch and a precompiled types file named StdAfx.obj.
 

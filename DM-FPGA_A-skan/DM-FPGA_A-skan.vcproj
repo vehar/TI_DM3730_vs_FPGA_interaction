@@ -21,10 +21,11 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Pocket PC 2003 (ARMV4)"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="A:\VS\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="A:\VS\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
+			BuildLogFile="A:\VS\BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -44,11 +45,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
+				AdditionalOptions="-MP"
 				Optimization="0"
 				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_CONSOLE;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
+				FloatingPointExceptions="false"
 				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="$(IntDir)/vc80.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -451,6 +456,14 @@
 				</File>
 				<File
 					RelativePath=".\AcousticLib\AcousticScheme.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\AcousticSchemeProcessor.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AcousticLib\AnalogContrStm.h"
 					>
 				</File>
 				<File

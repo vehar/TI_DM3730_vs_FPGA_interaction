@@ -180,9 +180,9 @@ size+=nr;
 	 {
       FPGA_DATA0((Buf[i]>>j)&1);
 	  FPGA_DCLK(1);
-	  Sleep(0.1);
+	  Sleep(0);
 	  FPGA_DCLK(0);
-	  Sleep(0.1);
+	  Sleep(0);
 	 }
  //}
 //FPGA_Write_Prg_Buf((unsigned short*)buf, dwBytesRead);
