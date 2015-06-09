@@ -14,9 +14,9 @@
 
 enum FPGA_Addresses
 {
-	FreqSync1Addr = 1, FreqSync2Addr, SyncCtrlAddr, CompressAddr, DetectorAddr, AnChSwich, AttenSw, IntegratorCoefAddr, InversionSignal, AcoustContSum,
-	TgcEnAddr = 11, DacData1, DacData2, TgcStartAddrWr, DacCh, AcousticContactGain,
-	GenBuffAddr1 = 21, GenBuffAddr2, GenCSAddr, GenStartAddrWr, GenEn,
+	FreqSync1Addr = 1, FreqSync2Addr, SyncCtrlAddr, CompressAddr, DetectorAddr, AnChSwich = 19, AttenSw = 7, IntegratorCoefAddr, InversionSignal, AcoustContSum,
+	TgcEnAddr = 11, DacData1, DacData2, TgcStartAddrWr, DacCh = 49, AcousticContactGain = 95,
+	GenBuffAddr1 = 21, GenBuffAddr2, GenCSAddr, GenStartAddrWr = 67, GenEn = 80,
 	FilterEnAddr = 30, FilterCompressAddr, FilterCoeffsAddr, FilterCoeffsRstAddrWr,
 	//AScanDrawMode = 39,
 	//AScanEnAddr = 40, AScanBuffAddr1, AScanWrCS, AScanStartAddrWr, AScanRamCntRdRst,
@@ -57,6 +57,7 @@ public:
 	void setSignalDelay(UINT val);
 	void resetReadRamCounter();
 	void getSignalData(USHORT* Buff, int size);
+
 	void setSignalDataLen(USHORT val);
 	void setSignalCompress(USHORT val);
 	void setSignalInversion(USHORT val);

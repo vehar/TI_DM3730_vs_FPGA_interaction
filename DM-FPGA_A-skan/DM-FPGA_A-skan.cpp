@@ -100,7 +100,7 @@ void System_init (void)
 {
 //////System_init/////////////////////////////////////////////////////
 FPGA.setSyncSource(SyncStop);
-FPGA.setSyncFreq(activeScheme->inqFreq);//1000
+FPGA.setSyncFreq(activeScheme->inqFreq);//1000 //>>IN_SET
 FPGA.setSignalCompress(activeScheme->signal.compress);//1
 FPGA.setSyncSource(SyncInt);//SyncCtrl - on
 
@@ -121,8 +121,9 @@ FPGA_Write(_AScanRamCntRdRst ,0x01); //не сбрасвается счётчик записи
 void Gen_init (void)
 {
 //////GEN_init//////////////////////////////////////////////////////////////////////////
-FPGA_Write(_GenCSAddr ,1);//GenCS
-FPGA_Write(_GenEn ,1);//GenEn
+FPGA.setGenSel(1);//GenCS //FPGA_Write(_GenCSAddr ,1);//GenCS
+//FPGA.setGenData();
+
 FPGA_Write(_GenStartAddrWr ,0);//GenStartAddrWr
 //////////////////////////////////////
 for (int i = 0; i < 256; ++i)
@@ -130,8 +131,8 @@ for (int i = 0; i < 256; ++i)
 	FPGA_Write(_GenBuffAddr1 ,0);
 	FPGA_Write(_GenBuffAddr2 ,0);
 }
-FPGA_Write(67 ,0);//GenStartAddrWr
-//while(1)//for(int i = 0; i<10; i++)
+FPGA_Write(_GenStartAddrWr ,0);//GenStartAddrWr
+//while(1)//for(int i = 0; i<10; i++) //>>IN_SET
 {	
 	FPGA_Write(_GenBuffAddr1 ,1 + del_chk(160));
 	FPGA_Write(_GenBuffAddr2 ,0);
@@ -146,8 +147,9 @@ FPGA_Write(67 ,0);//GenStartAddrWr
 	FPGA_Write(_GenBuffAddr1 ,4 + del_chk(50));
 	FPGA_Write(_GenBuffAddr2 ,0);
 
-	Sleep(10);
+	//Sleep(10);
 }
+FPGA.setGenOutCh(1);//GenEn //FPGA_Write(_GenEn ,1);//GenEn
 //////GEN_init////////////////////////////////////////////////////////////////////
 }
 
@@ -165,37 +167,38 @@ FPGA_Write(_RamCntRdRst ,1); //RamCntRdRst - ok
 FPGA_Write(_DetectorAddr ,0);//Detector = pos+neg 
 FPGA_Write(_ReadBuffSize ,480); //ReadBuffSize
 
-FPGA_Write(_AdcDelayAddr1 ,5); //130
-FPGA_Write(_AdcDelayAddr2 ,0);
+FPGA_Write(_AdcDelayAddr1 ,500); //130 //>>IN_SET
+FPGA_Write(_AdcDelayAddr2 ,0); //>>IN_SET
 
-FPGA_Write(_ProbeDelay ,1);//10
-
-FPGA_Write(_CompressAddr ,3);//Compress //3
+FPGA.setProbeDelay(activeScheme->probe.delayUs);//5-2000  //FPGA_Write(_ProbeDelay ,1);////>>IN_SET
 
 
-	FPGA_Write(_TgcEnAddr ,1);//TgcEn - при 0 - пропадала генерация
+FPGA_Write(_CompressAddr ,3);//Compress //3 //>>IN_SET
+
+FPGA.setTGCState(1);//TgcEn - при 0 - пропадала генерация //FPGA_Write(_TgcEnAddr ,1); //>>IN_SET	
 {
 		for(int i = 0; i< 479; i++)
 		{
-			FPGA_Write(_DacData1 ,20);//DacData[15:0]
-			FPGA_Write(_DacData2 ,10);//DacData[31:16]
+			FPGA_Write(_DacData1 ,20);//DacData[15:0] //>>IN_SET
+			FPGA_Write(_DacData2 ,10);//DacData[31:16] //>>IN_SET
 		}
 	}
 
-FPGA_Write(_AcousticContactGain ,10);
+FPGA.setAcoustContGainCode(10);//FPGA_Write(_AcousticContactGain ,10); //>>IN_SET
 
-FPGA_Write(_DacCh ,0);//DacCh 0-1; 1-сильно шумит
+FPGA.setDACCh(0);//DacCh 0-1; 1-сильно шумит FPGA_Write(_DacCh ,0);//DacCh 0-1; 1-сильно шумит
 
-FPGA_Write(_AttenSw ,0);
-FPGA_Write(_AnChSwich ,0);//AnChSwich
+FPGA_Write(_AttenSw ,0);//>>IN_SET 
+
+FPGA.setAnalogChSwich(0);//FPGA_Write(_AnChSwich ,0);//AnChSwich //>>IN_SET
 
 
-FPGA_Write(_FilterEnAddr ,1);
-FPGA_Write(_FilterCompressAddr ,1);
-FPGA_Write(_FilterCoeffsRstAddrWr,1);
-FPGA_Write(_FilterSwich,0);
+FPGA_Write(_FilterEnAddr ,1); //>>IN_SET
+FPGA_Write(_FilterCompressAddr ,1); //>>IN_SET
+FPGA_Write(_FilterCoeffsRstAddrWr,1); //>>IN_SET
+FPGA_Write(_FilterSwich,0); //>>IN_SET
 
-for(int i=0; i<23; i++)
+for(int i=0; i<23; i++) //>>IN_SET
 {
 FPGA_Write(_FilterCoeffsAddr ,1/*koef_array[i]*/);
 }
