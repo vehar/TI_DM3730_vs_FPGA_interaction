@@ -15,3 +15,6 @@ extern int EncState;
 void KeypadInit(void);
 DWORD WINAPI KeyPadInterruptThread(PVOID pvParam);
 DWORD WINAPI ThreadKeybProc(LPVOID lpParameter);
+
+
+void KeyPadSM (void);//state mashine

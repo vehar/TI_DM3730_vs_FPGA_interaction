@@ -50,12 +50,44 @@ HANDLE hHandle;
  int EncState = 0;
 
 ///////////////////Settings///////////////////////////////////
-//int SyncFreq = 1000; 
-int tmp = 0;
+//FreqSync+			activeScheme->inqFreq;
+ //SyncCtrl
+ //Compress+
+ //AnChSwich
+ //AttenSw
+ //AcousticContactGain!
+ //GenBuff?
+ //AScanEn
+ //AdcDelay?
+ //ProbeDelay?
+
+//Отображать:
+ //пороговая чувствительность - двигается горизонтально (глубина обнаружения дефекта)
+ //дH, дL  -условная ширина дефекта и глубина залегания
+
+int compress_val;
+int Channel;
+bool AScanEn;
+Sync SyncState = SyncStop;
+
 /////////////////////////////////////////////////////////////
 void AcousticScheme_DefaultInit(void)
 {
 activeScheme = &Rdm11Scheme;
+
+activeScheme->inqFreq  = 1000;//FreqSync	
+SyncState = SyncInt;//SyncCtrl
+compress_val = 3;//Compress
+Channel = 0;//AnChSwich
+activeScheme->params.attenEn = 0; //AttenSw
+activeScheme->params.gainDb = 10;
+
+ //AcousticContactGain!
+ //GenBuff?
+ AScanEn = 1;//AScanEn
+
+ activeScheme->signal.adcDelayUs = 500; //AdcDelay?
+ activeScheme->probe.delayUs = 10;//ProbeDelay?
 }
 
 
@@ -102,7 +134,7 @@ void System_init (void)
 FPGA.setSyncSource(SyncStop);
 FPGA.setSyncFreq(activeScheme->inqFreq);//1000 //>>IN_SET
 FPGA.setSignalCompress(activeScheme->signal.compress);//1
-FPGA.setSyncSource(SyncInt);//SyncCtrl - on
+FPGA.setSyncSource(SyncState);//SyncCtrl - on
 
 FPGA_Write(100 ,0);//SyncCtrl_nENABLE - on
 //////System_init/////////////////////////////////////////////////////
@@ -167,13 +199,15 @@ FPGA_Write(_RamCntRdRst ,1); //RamCntRdRst - ok
 FPGA_Write(_DetectorAddr ,0);//Detector = pos+neg 
 FPGA_Write(_ReadBuffSize ,480); //ReadBuffSize
 
-FPGA_Write(_AdcDelayAddr1 ,500); //130 //>>IN_SET
-FPGA_Write(_AdcDelayAddr2 ,0); //>>IN_SET
+
+FPGA.WriteDWORD(_AdcDelayAddr1,_AdcDelayAddr2,activeScheme->signal.adcDelayUs);//need test
+//FPGA_Write(_AdcDelayAddr1 ,500); //130 //>>IN_SET
+//FPGA_Write(_AdcDelayAddr2 ,0); //>>IN_SET
 
 FPGA.setProbeDelay(activeScheme->probe.delayUs);//5-2000  //FPGA_Write(_ProbeDelay ,1);////>>IN_SET
 
 
-FPGA_Write(_CompressAddr ,3);//Compress //3 //>>IN_SET
+FPGA_Write(_CompressAddr ,compress_val);//Compress //3 //>>IN_SET
 
 FPGA.setTGCState(1);//TgcEn - при 0 - пропадала генерация //FPGA_Write(_TgcEnAddr ,1); //>>IN_SET	
 {
@@ -188,9 +222,9 @@ FPGA.setAcoustContGainCode(10);//FPGA_Write(_AcousticContactGain ,10); //>>IN_SE
 
 FPGA.setDACCh(0);//DacCh 0-1; 1-сильно шумит FPGA_Write(_DacCh ,0);//DacCh 0-1; 1-сильно шумит
 
-FPGA_Write(_AttenSw ,0);//>>IN_SET 
+FPGA_Write(_AttenSw , activeScheme->params.attenEn);//>>IN_SET 
 
-FPGA.setAnalogChSwich(0);//FPGA_Write(_AnChSwich ,0);//AnChSwich //>>IN_SET
+FPGA.setAnalogChSwich(Channel);//FPGA_Write(_AnChSwich ,0);//AnChSwich //>>IN_SET
 
 
 FPGA_Write(_FilterEnAddr ,1); //>>IN_SET
