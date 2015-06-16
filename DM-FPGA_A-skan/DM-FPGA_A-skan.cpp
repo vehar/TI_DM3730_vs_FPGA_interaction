@@ -248,8 +248,50 @@ for (int i = 0; i<=127; i++){FPGA_Write(i ,0);}
 FPGA_Write(0 ,0);	
 }
 
+DWORD WINAPI ThreadAdcAskan(LPVOID lpParameter)
+{
+int arr[1010] = {0};
+int adc_val = 0;
+int adc_sample_cnt = 0;
+int rd_index = 0;
+int window_480 = 1;
 
+	while(1)
+	{
+	Sleep(100);//Return quants to system must be 0
+   printf("while \n");
+	int t = 0;
 
+FPGA_Write(_RamCntRdRst ,0x01);
+FPGA_Write(_AScanStartAddrWr ,0x00);
+FPGA_Write(_AScanRamCntRdRst ,0x01);
+
+for(int i = 0; i< 479; i++)
+{	
+	//arr[i] = FPGA_Read(AdcBuffAddr);
+	//adc_val = arr[i];// / 6;
+
+    adc_val = FPGA_Read(_AdcBuffAddr);
+
+	if((i>window_480)&&(i<window_480+480))
+  {
+	if(adc_val>900){adc_val = adc_val/2;}
+	if(adc_val>700){adc_val = adc_val/2;}
+	if(adc_val>500){adc_val = adc_val/2;}
+	if(adc_val>300){adc_val = adc_val/2;}
+
+adc_val -=100;
+adc_val = 272 - adc_val;
+
+	//if(adc_val<255)
+	{
+	FPGA_Write(_AScanBuffAddr1 ,adc_val+5);
+	FPGA_Write(_AScanBuffAddr2 ,adc_val);
+	}
+  }
+}
+	}
+}
 
 
 
@@ -310,11 +352,12 @@ Acust_init();
 
 	 printf("Leave treads \n");*/
 	// SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,5000,500 );
+hHandle = CreateThread(NULL, 0, ThreadAdcAskan, (LPVOID)2, 0, &dwThreadId);  //Main adc_to_A-scan thread
 //	CloseHandle(hHandle);
 //--------------------------------------------------------------------------------
 
 //////READ_ADC////////////////////////////////////////////////////////////////////
-
+/*
 int arr[1010] = {0};
 int adc_val = 0;
 int adc_sample_cnt = 0;
@@ -327,23 +370,11 @@ int window_480 = 1;
 
 while(1)
 {
-	Sleep(0);//Return quants to system
+	Sleep(100);//Return quants to system
+printf("while \n");
+
 
 	int t = 0;
-	//while((t <= 10)||(t >= 950)){t = FPGA_Read(AdcBuffAddr);} //задержка 130
-/*	
-	while((t&(3<<9))==0) //Фильтр
-	{
-		t = FPGA_Read(AdcBuffAddr);
-		rd_index++;
-		if (rd_index>=479)
-		{
-			rd_index  = 0;
-			FPGA_Write(RamCntRdRst ,0x01);
-		}	
-	} //задержка 0
-*/	
-
 
 FPGA_Write(_RamCntRdRst ,0x01);
 FPGA_Write(_AScanStartAddrWr ,0x00);
@@ -373,7 +404,7 @@ adc_val = 272 - adc_val;
 	}
   }
 }
-}
+}*/
 //////READ_ADC////////////////////////////////////////////////////////////////////
 
     while(1)
