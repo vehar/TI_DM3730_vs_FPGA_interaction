@@ -36,6 +36,12 @@
 #include "Controls/CustControls.h"
 
 //#define DEBUG 
+	int DBUS_TEST_result = 0;
+	int ABUS_TEST_result = 0;
+	int error = 0;
+
+int FPGA_ABUS_TEST();
+int FPGA_DBUS_TEST();
 
 int koef_array[23];
 FPGACommunication FPGA;
@@ -48,6 +54,7 @@ HANDLE hHandle;
  int DataRefreshed_Flag = 0;
  int KeyState = 0;
  int EncState = 0;
+
 
 ///////////////////Settings///////////////////////////////////
 //FreqSync+			activeScheme->inqFreq;
@@ -258,8 +265,8 @@ int window_480 = 1;
 
 	while(1)
 	{
-	Sleep(100);//Return quants to system must be 0
-   printf("while \n");
+	Sleep(0);//Return quants to system must be 0
+   //printf("while \n");
 	int t = 0;
 
 FPGA_Write(_RamCntRdRst ,0x01);
@@ -321,6 +328,18 @@ koef_array	[	20	]	=	75	;
 koef_array	[	21	]	=	114	;
 koef_array	[	22	]	=	128	;
 
+//--------------------Tests section start----------------------------------------
+		DBUS_TEST_result = FPGA_DBUS_TEST();
+		printf("FPGA_D_BUS_TEST %s ", (DBUS_TEST_result?"ERR = ":"OK\n"));
+		if(DBUS_TEST_result){printf("%d\n",DBUS_TEST_result); error++;}
+        
+		ABUS_TEST_result = FPGA_ABUS_TEST();
+		printf("FPGA_A_BUS_TEST %s ", (ABUS_TEST_result?"ERR = ":"OK\n"));
+		if(ABUS_TEST_result){printf("%d\n",ABUS_TEST_result); error++;}
+//--------------------Tests section end------------------------------------------
+
+
+
 AcousticScheme_DefaultInit();
 
 KeypadInit();
@@ -338,8 +357,7 @@ draw_sine();
 
 Gen_init();
 
- 
-Acust_init();
+Acust_init(); 
 
 //----------------------------Main threads started--------------------------------
 //CustThread(ThreadKeybProc,NULL);
@@ -352,12 +370,12 @@ Acust_init();
 
 	 printf("Leave treads \n");*/
 	// SendMouseMsg(MOUSEEVENTF_ABSOLUTE, NULL,5000,500 );
-hHandle = CreateThread(NULL, 0, ThreadAdcAskan, (LPVOID)2, 0, &dwThreadId);  //Main adc_to_A-scan thread
+//hHandle = CreateThread(NULL, 0, ThreadAdcAskan, (LPVOID)2, 0, &dwThreadId);  //Main adc_to_A-scan thread
 //	CloseHandle(hHandle);
 //--------------------------------------------------------------------------------
 
 //////READ_ADC////////////////////////////////////////////////////////////////////
-/*
+
 int arr[1010] = {0};
 int adc_val = 0;
 int adc_sample_cnt = 0;
@@ -370,8 +388,8 @@ int window_480 = 1;
 
 while(1)
 {
-	Sleep(100);//Return quants to system
-printf("while \n");
+	Sleep(0);//Return quants to system
+//printf("while \n");
 
 
 	int t = 0;
@@ -404,11 +422,89 @@ adc_val = 272 - adc_val;
 	}
   }
 }
-}*/
+}
 //////READ_ADC////////////////////////////////////////////////////////////////////
 
     while(1)
     {//STOP
 
     }
+}
+
+
+//=======================================================================================
+unsigned char   Value;
+
+int FPGA_DBUS_TEST()
+{
+	int Ok = 0;
+#ifdef WINCE
+	unsigned short temp;
+	int Value1;
+	for(int i=0;i<15;i++)
+	{
+		Value1 =(int) (100.0 * (float) i/14);
+		if(i==14) Value1 = 99;
+		if(Value1 >= 100) 
+		{
+			Value = 99;
+		}
+		else
+		{
+			Value = Value1;
+		}
+		//InvalidateRect(MainW->GetHWnd(),0,0);
+		FPGA_Write(17 ,(unsigned short)1<<i);
+		FPGA_Write(127,(unsigned short)~1<<i);
+		temp = FPGA_Read(17);
+		if(temp != 1<<i) Ok |= 1<<i;
+	}
+#else
+	for(int i=0;i<100;i++)
+	{
+		Sleep(20);
+		Value = i;
+		InvalidateRect(MainW->GetHWnd(), NULL, 0);
+	}
+	return 1;
+
+#endif
+	return Ok;
+}
+
+int FPGA_ABUS_TEST()
+{
+	int Ok = 0;
+
+#ifdef WINCE
+	unsigned short temp;
+	int Value1;
+	for(int i=0;i<7;i++)
+	{
+		Value1 =(int) (100.0 * (float) i/6);
+		if(i==6) Value1 = 99;
+		if(Value1 >= 100)
+		{
+          Value = 99;
+		}
+		else
+		{
+		  Value = Value1;
+		}
+//		InvalidateRect(MainW->GetHWnd(),0,0);
+		FPGA_Read( 1 << i );  
+		temp = FPGA_Read(18);
+		if(temp != 1<<i) Ok |= 1<<i;
+	}
+#else
+	for(int i=0;i<100;i++)
+	{
+		Sleep(20);
+		Value = i;
+		InvalidateRect(MainW->GetHWnd(), NULL, 0);
+	}
+	return 1;
+#endif
+
+	return Ok;
 }
